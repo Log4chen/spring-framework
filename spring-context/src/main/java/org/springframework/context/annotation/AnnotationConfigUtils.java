@@ -233,6 +233,9 @@ public class AnnotationConfigUtils {
 		}
 	}
 
+	/**
+	 * 解析Bean上的注解，并将结果设置到AnnotatedBeanDefinition中的对应属性
+	 */
 	public static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd) {
 		processCommonDefinitionAnnotations(abd, abd.getMetadata());
 	}

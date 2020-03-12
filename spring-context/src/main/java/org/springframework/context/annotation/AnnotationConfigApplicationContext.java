@@ -58,10 +58,15 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
 
 	/**
+	 * 构建一个context对象，这个context需要被populated，通过先调用register方法，然后手动调用refresh方法，
 	 * Create a new AnnotationConfigApplicationContext that needs to be populated
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		// 这里会隐式调用父类GenericApplicationContext的默认构造器
+		// 其中初始化了BeanFactory --- new DefaultListableBeanFactory()
+		super(); // 添加super()方便阅读源码
+		// AnnotationConfigApplicationContext间接实现了BeanDefinitionRegistry接口，所以括号中的this可以作为registry
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
@@ -84,6 +89,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... annotatedClasses) {
 		this();
+		// 将annotatedClasses解析封装为为BeanDefinition并注册到registry
+		// 通过AnnotatedBeanDefinitionReader.doRegisterBean()完成
 		register(annotatedClasses);
 		refresh();
 	}

@@ -164,6 +164,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * Create a new AbstractAutowireCapableBeanFactory.
+	 * 忽略实现了以下xxxAware接口的实现类中xxx属性的自动装配
 	 */
 	public AbstractAutowireCapableBeanFactory() {
 		super();
@@ -260,6 +261,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 都只针对xml配置的自动装配（spring文档中autowiring特指xml中配置自动装配，而@Autowired只是表明某属性依赖容器注入，不是指自动装配）
+	 * ignoreDependencyType直接忽略任何bean中对属性xxx类的自动装配；
+	 * ignoreDependencyInterface忽略对实现了xxx接口的bean中，与xxx接口中包含的setter方法同类型对象的自动装配，
+	 * 注入动作可由setter方法设置（spring通过某个AwareProcessor调用个Aware的setter方法？？）
+	 * 参考：https://www.jianshu.com/p/3c7e0608ff1f
+	 *
 	 * Ignore the given dependency interface for autowiring.
 	 * <p>This will typically be used by application contexts to register
 	 * dependencies that are resolved in other ways, like BeanFactory through
