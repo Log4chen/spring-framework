@@ -193,6 +193,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	}
 
 	/**
+	 * 注册默认的filters，只有includeFilter，包含了@Component @Managed @Named
+	 * 也可以通过向includeFilters中添加自己编写的注解，提供给Spring扫描
+	 *
 	 * Register the default filter for {@link Component @Component}.
 	 * <p>This will implicitly register all annotations that have the
 	 * {@link Component @Component} meta-annotation including the
