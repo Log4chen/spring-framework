@@ -67,7 +67,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 其中初始化了BeanFactory --- new DefaultListableBeanFactory()
 		super(); // 添加super()方便阅读源码
 		// AnnotationConfigApplicationContext间接实现了BeanDefinitionRegistry接口，所以括号中的this可以作为registry
+		// 读取AnnotatedBeanDefinition
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		// 扫描ClassPathBeanDefinition
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
