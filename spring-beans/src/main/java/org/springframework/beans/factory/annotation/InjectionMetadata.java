@@ -174,11 +174,14 @@ public class InjectionMetadata {
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
 				throws Throwable {
 
+			// 通过filed注入
 			if (this.isField) {
 				Field field = (Field) this.member;
+				// 通过反射机制注入，即使该field是private修饰
 				ReflectionUtils.makeAccessible(field);
 				field.set(target, getResourceToInject(target, requestingBeanName));
 			}
+			// 通过method注入
 			else {
 				if (checkPropertySkipping(pvs)) {
 					return;

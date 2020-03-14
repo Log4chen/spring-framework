@@ -70,6 +70,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 该reader提供了将指定的class对象，register到register中的方法
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		// 该scanner提供扫描指定packages下带指定注解的class类，并解析封装为eanDefinition
+		// 也提供registerBeanDefinition方法
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 

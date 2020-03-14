@@ -490,6 +490,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 返回通过手动调用addBeanFactoryPostProcessor方法添加的，使用@Component自动扫描到的不在此list中
 	 * Return the list of BeanFactoryPostProcessors that will get applied
 	 * to the internal BeanFactory.
 	 */
@@ -519,10 +520,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
+			// 告诉子类实现，refresh其内置的BeanFactory
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// 配置BeanFactory
+			// 配置BeanFactory一些标准的特性，即初始化
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
@@ -531,9 +533,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
+				// invoke各BeanFactoryPostProcessor（包括其子接口BeanDefinitionRegistryPostProcessor）
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
+				// 注册实现了BeanPostProcessor接口的bean
+				// 方便调用postProcessBeforeInitialization、postProcessAfterInitialization等方法
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
@@ -543,15 +548,18 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
+				// 空实现，在几个xxxWebApplicationContext中重写了该方法
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 
 				// Check for listener beans and register them.
 				registerListeners();
 
+				// 实例化非lazy加载的单例Bean，单例bean放在一个map中
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 
+				
 				// Last step: publish corresponding event.
 				finishRefresh();
 			}
@@ -636,6 +644,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		refreshBeanFactory();
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+		// 通过子类重写getBeanFactory()返回BeanFactory实例
 		if (logger.isDebugEnabled()) {
 			logger.debug("Bean factory for " + getDisplayName() + ": " + beanFactory);
 		}
@@ -655,9 +664,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
 		// Configure the bean factory with context callbacks.
+		// 添加一个BeanPostProcessor，ApplicationContextAwareProcessor用来callback各xxxAware的setxxx方法
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 		// 忽略6个继承了Aware接口的xxxAware的实现类中，在自动装配时，会忽略对xxx类型属性的自动化装配
-		// 这些xxx类型的属性在哪里完成注入的？？？ FIXME
+		// 这些xxx类型的属性在哪里完成注入的？？？
+		// 通过beanFactory中的后置处理器ApplicationContextAwareProcessor中的方法回调xxxAware中的setxxx方法
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
 		beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
@@ -665,7 +676,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
 		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
 
-		// 定义以下几种接口类型的autowire实现
+		// 定义以下几种接口类型的autowire实现；如@Autowire 成员变量为BeanFactory接口，则注入以下的BeanFactory对象
 		// BeanFactory interface not registered as resolvable type in a plain factory.
 		// MessageSource registered (and found for autowiring) as a bean.
 		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
@@ -711,6 +722,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// getBeanFactoryPostProcessors() 返回手动add的processor
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
