@@ -228,7 +228,7 @@ public class AnnotatedBeanDefinitionReader {
 		// 生成beanName
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
-		// 解析注解Lazy Primary DependsOn Role Description
+		// 解析注解Lazy Primary DependsOn Role Description,设置abd的对应的属性
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
