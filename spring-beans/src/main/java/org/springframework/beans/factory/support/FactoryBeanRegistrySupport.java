@@ -111,8 +111,12 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 								// Temporarily return non-post-processed object, not storing it yet..
 								return object;
 							}
+							// check该bean是否正在创建中（会将该beanName add到一个Set中，Set不允许重复元素）
+							// 如果时则抛异常（什么情况下回发生呢？？ QA）
 							beforeSingletonCreation(beanName);
 							try {
+								// callback所有的BeanPostProcessor#postProcessAfterInitialization
+								// QA processor#before在哪里callback的？？
 								object = postProcessObjectFromFactoryBean(object, beanName);
 							}
 							catch (Throwable ex) {
@@ -120,10 +124,12 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
 										"Post-processing of FactoryBean's singleton object failed", ex);
 							}
 							finally {
+								// 将该beanName从正在创建的Set中remove
 								afterSingletonCreation(beanName);
 							}
 						}
 						if (containsSingleton(beanName)) {
+							// cache bean实例
 							this.factoryBeanObjectCache.put(beanName, object);
 						}
 					}

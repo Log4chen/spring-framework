@@ -537,14 +537,16 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// 注册实现了BeanPostProcessor接口的bean
+				// 注册实现了BeanPostProcessor接口的bean，拦截bean的创建
 				// 方便调用postProcessBeforeInitialization、postProcessAfterInitialization等方法
+				// 注册时就完成了callback BeanPostProcessor#before
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
 				// Initialize message source for this context.
 				initMessageSource();
 
+				// ApplicationEventMulticaster
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
@@ -556,6 +558,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// 实例化非lazy加载的单例Bean，单例bean放在一个map中
+				// 并在实例化bean之后，callback PostProcessor#after
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 
@@ -872,6 +875,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * initializing all remaining singleton beans.
 	 */
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
+		// DefaultConversionService中添加了各种Converter，用于转换不同的对象
+		// 比如，controller入参中，将字符串"3,4,5"字段转换为Collection<Object>，是通过StringToCollectionConverter完成的（猜测）
 		// Initialize conversion service for this context.
 		if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &&
 				beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) {
@@ -879,6 +884,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 					beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
 		}
 
+		// 用于解析 ${} 之类的注解属性
 		// Register a default embedded value resolver if no bean post-processor
 		// (such as a PropertyPlaceholderConfigurer bean) registered any before:
 		// at this point, primarily for resolution in annotation attribute values.
@@ -895,9 +901,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Stop using the temporary ClassLoader for type matching.
 		beanFactory.setTempClassLoader(null);
 
+		// 冻结所有的bean definition，不再允许修改(包括post processor)
 		// Allow for caching all bean definition metadata, not expecting further changes.
 		beanFactory.freezeConfiguration();
 
+		// 实例化所有的非lazy单例bean对象
 		// Instantiate all remaining (non-lazy-init) singletons.
 		beanFactory.preInstantiateSingletons();
 	}
