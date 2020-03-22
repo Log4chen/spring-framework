@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 @Aspect
 public class ServiceAspect {
 	@Pointcut("execution(public String fun.bitbit.service.order.*.*(java.lang.Integer...))")

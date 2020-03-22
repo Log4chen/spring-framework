@@ -216,7 +216,7 @@ final class PostProcessorRegistrationDelegate {
 		// 只是check processor数量是否有变化？beanFactory中的processor后面会增长
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
-		// 最后注册internalPostProcessors，也就是在list的末尾，invoke顺序呢？TODO
+		// 最后注册internalPostProcessors，也就是在list的末尾，invoke顺序呢？QA
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
 		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
