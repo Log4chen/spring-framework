@@ -1,5 +1,6 @@
 package fun.bitbit;
 
+import fun.bitbit.lifecycle.Order;
 import fun.bitbit.service.ISpellChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +18,9 @@ public class TextEditor {
 //	@Inject
 //	@Qualifier("englishSpellChecker")
 	private ISpellChecker spellChecker;
+
+	@Autowired
+	private Order order;
 
 	public void inputText(String text){
 		spellChecker.check(text);
