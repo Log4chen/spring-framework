@@ -67,12 +67,12 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// 其中初始化了BeanFactory --- new DefaultListableBeanFactory()
 		super(); // 添加super()方便阅读源码
 		// AnnotationConfigApplicationContext间接实现了BeanDefinitionRegistry接口，所以括号中的this可以作为registry
-		// 初始化reader，注册了相关的annotation post processors，7个spring的核心RootBeanDefinition
+		// 初始化reader，注册了7个Spring内部的PostProcessor（项目中存在JAP才会注册PersistenceAnnotationBeanPostProcessor）
 		// 该reader提供了将指定的class对象，register到register中的方法
 		this.reader = new AnnotatedBeanDefinitionReader(this);
 		/**
 		 * context 提供{@link #scan}方法，给我们手动调用
-		 * context的扫描工作不是通过这个scanner完成的，而是在reader中创建的scanner
+		 * context的扫描工作不是通过这个scanner完成的，而是在invoke ConfigurationClassPostProcessor时新new了一个
 		 */
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}

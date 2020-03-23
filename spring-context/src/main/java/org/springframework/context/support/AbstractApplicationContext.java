@@ -524,7 +524,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Tell the subclass to refresh the internal bean factory.
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// 配置BeanFactory一些标准的特性，即初始化
+			// 配置BeanFactory一些标准的特性
 			// 1、添加BeanPostProcessor---ApplicationContextAwareProcessor、ApplicationListenerDetector
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
@@ -697,7 +697,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// 如果没有自定义一下几个Bean，spring提供默认的环境
+		// 如果没有自定义以下几个Bean，spring提供默认的环境
 		// Register default environment beans.
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());

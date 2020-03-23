@@ -14,11 +14,11 @@ public class Application {
 		// 1、无参构造方法
 		// 2、register(Class<?>... annotatedClasses)
 		// 3、refresh
-		AnnotationConfigApplicationContext context0 = new AnnotationConfigApplicationContext(Application.class);
+//		AnnotationConfigApplicationContext context0 = new AnnotationConfigApplicationContext(Application.class);
 
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Application.class);
-		context.addBeanFactoryPostProcessor(beanFactory -> System.out.println("手动add的BeanFactoryPostProcessor"));
+//		context.addBeanFactoryPostProcessor(beanFactory -> System.out.println("手动add的BeanFactoryPostProcessor"));
 		context.refresh();
 
 //		TextEditor editor = context.getBean(TextEditor.class);

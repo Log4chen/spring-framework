@@ -198,6 +198,7 @@ public class AnnotatedBeanDefinitionReader {
 		doRegisterBean(annotatedClass, null, name, qualifiers);
 	}
 
+
 	/**
 	 * 将一个Class解析为BeanDefinition，并注册到registry中
 	 * Register a bean from the given bean class, deriving its metadata from
@@ -213,7 +214,7 @@ public class AnnotatedBeanDefinitionReader {
 	 * @since 5.0
 	 */
 	<T> void doRegisterBean(Class<T> annotatedClass, @Nullable Supplier<T> instanceSupplier, @Nullable String name,
-			@Nullable Class<? extends Annotation>[] qualifiers, BeanDefinitionCustomizer... definitionCustomizers) {
+							@Nullable Class<? extends Annotation>[] qualifiers, BeanDefinitionCustomizer... definitionCustomizers) {
 
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(annotatedClass);
 		// 根据@Conditional判断是否需要跳过解析
@@ -253,7 +254,6 @@ public class AnnotatedBeanDefinitionReader {
 		// 将beanName-BeanDefinition注册到BeanDefinitionRegistry中Map中
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
-
 
 	/**
 	 * Get the Environment from the given registry if possible, otherwise return a new

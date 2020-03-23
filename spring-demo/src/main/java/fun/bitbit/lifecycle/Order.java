@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 @Component
-public class Order implements InitializingBean, BeanNameAware {
+public class Order implements InitializingBean, BeanNameAware{
 
 	static {
 		System.out.println("order--static{}");
