@@ -540,7 +540,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// 注册实现了BeanPostProcessor接口的Class类，用于拦截每个bean的实例化
 				// 通过callback postProcessBeforeInitialization、postProcessAfterInitialization方法
-				// 注册时就完成了callback BeanPostProcessor#before
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
 
@@ -559,7 +558,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// 实例化非lazy加载的单例Bean，单例bean放在一个map中
-				// 并在实例化bean之后，callback PostProcessor#after
+				// 在完成new之后对其进行初始化，才算完成创建一个Bean对象
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 

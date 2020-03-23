@@ -538,6 +538,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd.isSingleton()) {
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
+		// 1、new 对象
 		if (instanceWrapper == null) {
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
@@ -547,6 +548,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			mbd.resolvedTargetType = beanType;
 		}
 
+		// 2、MergedBeanDefinitionPostProcessor
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
@@ -573,10 +575,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
+		// 3、初始化已创建的对象
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
 			populateBean(beanName, mbd, instanceWrapper);
+			// 执行初始化操作
+			// 1、invokeAwareMethods: BeanNameAware BeanClassLoaderAware, BeanFactoryAware
+			// 2、invokeInitMethods: InitializingBean#afterPropertiesSet(), init-method
+			// 3、BeanPostProcessor:#postProcessAfterInitialization
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1073,6 +1080,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 为指定的bean创建实例，使用适当的实例化策略：factory method 依赖容器autowiring的有参构造器 or 默认无参构造器
+	 *
 	 * Create a new instance for the specified bean, using an appropriate instantiation strategy:
 	 * factory method, constructor autowiring, or simple instantiation.
 	 * @param beanName the name of the bean
@@ -1208,6 +1217,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * 通过默认构造器创建bean
+	 *
 	 * Instantiate the given bean using its default constructor.
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
@@ -1654,6 +1665,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 	/**
+	 * 对bean实例进行初始化：
+	 *  0、invokeAwareMethods: BeanNameAware BeanClassLoaderAware, BeanFactoryAware
+	 * 	1、BeanPostProcessor:#postProcessBeforeInitialization
+	 *  2、invokeInitMethods: InitializingBean#afterPropertiesSet(), init-method
+	 *  3、BeanPostProcessor:#postProcessAfterInitialization
+	 *
 	 * Initialize the given bean instance, applying factory callbacks
 	 * as well as init methods and bean post processors.
 	 * <p>Called from {@link #createBean} for traditionally defined beans,
@@ -1719,6 +1736,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	/**
+	 * callback InitializingBean#afterPropertiesSet()
+	 * callback init-method
+	 *
 	 * Give a bean a chance to react now all its properties are set,
 	 * and a chance to know about its owning bean factory (this object).
 	 * This means checking whether the bean implements InitializingBean or defines

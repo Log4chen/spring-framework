@@ -65,16 +65,16 @@ final class PostProcessorRegistrationDelegate {
 
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-			// 手动add的PostProcessor
+			// 手动add的PostProcessor（非registry类型）
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 			// 包括手动add和spring内部及@Component的registerProcessor
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
-
+			// 遍历手动添加的beanFactoryPostProcessors
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
-					// invoke 手动添加的processor 的扩展方法
+					// invoke 手动添加的registry processor 的扩展方法
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					// 父接口中的方法，在后面和Spring内部的processor一起执行
 					registryProcessors.add(registryProcessor);
@@ -92,7 +92,7 @@ final class PostProcessorRegistrationDelegate {
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 
-			// 获取BeanDefinitionRegistryPostProcessor接口实现的beanName列表
+			// 获取BeanDefinitionRegistryPostProcessor接口实现的beanName列表 org.springframework.context.annotation.internalConfigurationAnnotationProcessor
 			// 只会获取到Spring内部的、@Component的processor，手动add的不在bean工厂中
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
@@ -105,7 +105,7 @@ final class PostProcessorRegistrationDelegate {
 			// 排序
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
-			// invoke各processor的ostProcessBeanDefinitionRegistry方法
+			// invoke各processor的postProcessBeanDefinitionRegistry方法
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			// 清空
 			currentRegistryProcessors.clear();

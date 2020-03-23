@@ -1632,6 +1632,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 		}
 
+		// 如果不是FactoryBean对象，则完成创建
+		// 否则，需要执行FactoryBean的getObject()方法，创建Bean对象
 		// Now we have the bean instance, which may be a normal bean or a FactoryBean.
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
