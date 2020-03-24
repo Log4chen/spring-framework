@@ -239,7 +239,7 @@ class ConfigurationClassParser {
 			}
 		}
 
-		// 递归处理
+		// 递归处理Configuration类和它的父类
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {

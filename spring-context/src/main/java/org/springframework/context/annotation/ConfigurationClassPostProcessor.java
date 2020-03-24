@@ -266,7 +266,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
-		// 只有Spring内部的5个类和启动类（和@Configuration无关）
+		// 7个PostProcessor，1个AppConfig（和@Configuration无关）
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		for (String beanName : candidateNames) {
@@ -280,11 +280,13 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			// 检查注解
 			// 如果加了@Configuration，那么对应的BeanDefinition为full;
 			// 如果加了@Bean,@Component,@ComponentScan,@Import,@ImportResource这些注解，则为lite。
+			// 所以，添加了@Configuration的AppConfig的bd会被添加到configCandidates
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
 
+		// 从这里的注释也可以看出，上面的for循环，只是为了找出@Configuration的bd
 		// Return immediately if no @Configuration classes were found
 		if (configCandidates.isEmpty()) {
 			return;
