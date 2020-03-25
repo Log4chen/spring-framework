@@ -8,6 +8,7 @@ import org.springframework.context.annotation.*;
 @Configuration
 @ComponentScan("fun.bitbit")
 //@ImportResource("classpath:application.xml")
+@EnableAspectJAutoProxy // 开启aop,会添加一个BeanPostProcessor-AnnotationAwareAspectJAutoProxyCreator创建代理
 public class Application {
 	public static void main(String[] args) {
 		// 该构造方法，相当先后于执行了
