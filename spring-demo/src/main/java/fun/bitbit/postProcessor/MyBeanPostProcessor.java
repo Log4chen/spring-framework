@@ -1,7 +1,9 @@
 package fun.bitbit.postProcessor;
 
+import fun.bitbit.service.impl.EnglishSpellChecker;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
@@ -26,13 +28,19 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
 		System.out.println("MyBeanPostProcessor--{}");
 	}
 
+	@Autowired
+	public void setXXX(EnglishSpellChecker checker) {
+		System.out.println("setter方法注入checker:" + checker);
+
+	}
+
 	@PostConstruct
 	public void postConstruct() {
 		System.out.println("MyBeanPostProcessor--PostConstruct");
 	}
 
 	@PreDestroy
-	public void preDestory() {
+	public void preDestroy() {
 		System.out.println("MyBeanPostProcessor--preDestory");
 	}
 

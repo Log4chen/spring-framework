@@ -24,6 +24,6 @@ public class Application {
 
 //		TextEditor editor = context.getBean(TextEditor.class);
 //		editor.inputText("hello");
-		context.close();
+//		context.close();
 	}
 }

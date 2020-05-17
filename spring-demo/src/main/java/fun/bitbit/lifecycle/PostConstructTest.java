@@ -10,6 +10,10 @@ import javax.annotation.PostConstruct;
 @Component
 public class PostConstructTest implements BeanFactoryPostProcessor {
 
+	public PostConstructTest (){
+		System.out.println("PostConstructTest构造器");
+	}
+
 
 	@PostConstruct
 	public void postConstruct(){
